@@ -69,21 +69,23 @@
             if(!code) return
 
             const result = await this.getToken(code)
+            console.log('#### token', result)
+            console.log('#### token TEST', result.token)
 
-            const { data } = await this.getProfile(result.token)
+            // const { data } = await this.getProfile(result.token)
 
-            if(this.friendRequired) {
-                const flag = await this.checkFriend(result.token)
+            // if(this.friendRequired) {
+            //     const flag = await this.checkFriend(result.token)
 
-                if(!flag) {
-                    this.error = this.friendErrorTest
-                }
-            }
+            //     if(!flag) {
+            //         this.error = this.friendErrorTest
+            //     }
+            // }
 
-            if(!this.error) {
-                const response = Object.assign(data, result.getPostable())
-                this.$emit('result', response)
-            }
+            // if(!this.error) {
+            //     const response = Object.assign(data, result.getPostable())
+            //     this.$emit('result', response)
+            // }
         },
 
         methods: {
@@ -97,12 +99,12 @@
                     scope: 'openid profile',
                 }
 
-                if(this.addFriend) {
-                    params = Object.assign(params, {
-                        prompt: 'consent',
-                        bot_prompt: 'aggressive'
-                    })
-                }
+                // if(this.addFriend) {
+                //     params = Object.assign(params, {
+                //         prompt: 'consent',
+                //         bot_prompt: 'aggressive'
+                //     })
+                // }
 
                 window.location.href = `${url}?${queryString.stringify(params)}`
             },
@@ -116,7 +118,9 @@
                 })
                 const params = new URLSearchParams()
                 linq.from(result.getPostable()).select(x => params.append(x.key, x.value)).toArray()
-
+                console.log({
+                    params: params.toString()
+                })
                 const { data } = await axios.post('https://api.line.me/oauth2/v2.1/token', params)
                 return new OAuthResult(data)
             },
